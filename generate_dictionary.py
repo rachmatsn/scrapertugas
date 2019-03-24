@@ -32,3 +32,6 @@ print(data)
 #simpan file
 with open('visualisasi_dictionary.txt', 'w') as fp:
     json.dump(data, fp)
+    
+c.close()
+conn.close()
