@@ -7,3 +7,6 @@
 
 # Catatan
 Jalankan <b>scrapeolx.py</b> hanya jika ingin benar2 mengulang scraping dari awal
+
+# Terakhir di-update
+Senin, 25 Maret 2019
