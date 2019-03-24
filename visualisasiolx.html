@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>OLX Chart: Jual-Beli Motor Bekas</title>
+</head>
+<body>
+  <div class="container">
+    <canvas id="myChart"></canvas>
+  </div>
+  <script type="text/javascript">
+    var d = {"labels": ["Bandung Kota", "Denpasar Kota", "Jakarta Selatan", "Surabaya Kota", "Jakarta Barat", "Jakarta Timur", "Bekasi Kota", "Depok Kota", "Tangerang Kota", "Tangerang Selatan Kota"],
+    "k1": [279, 231, 41, 25],
+    "k2": [310, 189, 34, 5],
+    "k3": [266, 203, 34, 34],
+    "k4": [316, 159, 32, 14],
+    "k5": [225, 237, 30, 17],
+    "k6": [243, 202, 40, 17],
+    "k7": [216, 182, 36, 24],
+    "k8": [198, 190, 46, 11],
+    "k9": [214, 187, 37, 5],
+    "k10": [191, 189, 37, 12]
+    };
+
+    var olxChart = document.getElementById('myChart')
+
+    var chart = new Chart(olxChart,{
+      type:'bar',
+      data:{
+        labels:d['labels'],
+        datasets:[{
+          label:'Honda',
+          backgroundColor:'#264653',
+          data:[d['k1'][0],d['k2'][0],d['k3'][0],d['k4'][0],d['k5'][0],
+                d['k6'][0],d['k7'][0],d['k8'][0],d['k9'][0],d['k10'][0]]
+        }, {
+          label:'Yamaha',
+          backgroundColor:'#2A9D8F',
+          data:[d['k1'][1],d['k2'][1],d['k3'][1],d['k4'][1],d['k5'][1],
+                d['k6'][1],d['k7'][1],d['k8'][1],d['k9'][1],d['k10'][1]]
+        }, {
+          label:'Suzuki',
+          backgroundColor:'#E9C464',
+          data:[d['k1'][2],d['k2'][2],d['k3'][2],d['k4'][2],d['k5'][2],
+                d['k6'][2],d['k7'][2],d['k8'][2],d['k9'][2],d['k10'][2]]
+        },{
+          label:'Kawasaki',
+          backgroundColor:'#F4A261',
+          data:[d['k1'][3],d['k2'][3],d['k3'][3],d['k4'][3],d['k5'][3],
+                d['k6'][4],d['k7'][3],d['k8'][3],d['k9'][3],d['k10'][3]]
+        }]
+      },
+      options:{
+        title:{
+          position:'top',
+          display:true,
+          text:['OLX - Sepuluh Kota/Kabupaten dengan Total Terbanyak Penjualan Motor Bekas','(Honda, Yamaha, Suzuki, Kawasaki)'],
+          fontSize:18,
+          padding:30
+        },
+        legend:{
+          display:true,
+          position:'right',
+          labels:{
+            fontColor:'#000'
+          }
+        },
+        layout:{
+          padding:{
+            left:0,
+            right:0,
+            bottom:0,
+            top:50
+          }
+        },
+        tooltips:{
+          enable:true
+        }
+      }
+    });
+  </script>
+</body>
+</html>
