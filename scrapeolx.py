@@ -8,28 +8,22 @@ count = 0
 page_url = []
 
 #SQLITE3
-conn = sqlite3.connect('scrapeolx.db')
+conn = sqlite3.connect('scrapeolx_1.db')
 c = conn.cursor()
 
 def create_table():
     c.execute("CREATE TABLE IF NOT EXISTS motorBekas(img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price TEXT)")
     c.execute("DELETE FROM motorBekas")
 
-#SCRAPY update
+#SCRAPY
 def textBeautify(data):
     return list(map(lambda s: s.strip(), data))
 
 def textBeautifyBrand(data):
     return list(map(lambda s: s.strip()[14:], data))
 
-def rupiahToNumber(rupiah):
-    noRp = rupiah[3:]
-    noDot = noRp.replace(".", "")
-    integer = int(noDot)
-    return integer
-
 def generate_page_url():
-    numofpage = 10
+    numofpage = 500
     for i in range(1,numofpage):
         if i==1:
             page_url.append('https://www.olx.co.id/motor/bekas/')
@@ -51,7 +45,7 @@ class ScrapeolxSpider(scrapy.Spider):
     def parse(self, response):
         print('test')
         img = textBeautify(response.css('td.offer>table>tbody>tr>td>span>a>img.fleft::attr(src)').extract())
-        txt = textBeautify(response.css('td.offer>table>tbody>tr>td>h3>a>span::text').extract())
+        txt = textBeautify(response.css('td.offer>table>tbody>tr>td>h2>a::text').extract())
         
         #brand################################
         BR = response.css('td.offer>table>tbody>tr>td>p>small.breadcrumb::text').extract() #brand
@@ -63,6 +57,12 @@ class ScrapeolxSpider(scrapy.Spider):
         city = textBeautify(response.css('td.offer>table>tbody>tr>td>p>small.breadcrumb>span::text').extract())
         year = textBeautify(response.css('td.offer>table>tbody>tr>td>div>div.year::text').extract())
         price = textBeautify(response.css('td.offer>table>tbody>tr>td>div>p.price>strong::text').extract())
+        print ('img: ', img)
+        print ('txt: ', txt)
+        print ('brand: ', brand)
+        print ('city: ', city)
+        print ('year: ', year)
+        print ('price : ', price)
         
         for item in zip(img,txt,brand,city,year,price):
             scraped_info = {
@@ -71,13 +71,14 @@ class ScrapeolxSpider(scrapy.Spider):
                 'brand': item[2],
                 'city': item[3],
                 'year': item[4],
-                'price': item[5],#rupiahToNumber(item[5]), 
+                'price': item[5], 
             }
+            
             c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
                       (scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
             conn.commit()
             yield scraped_info
         
-        
-        
+        c.close()
+        conn.close()
         
