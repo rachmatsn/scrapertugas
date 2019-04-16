@@ -3,12 +3,12 @@
 2) Visualisasi (chart.js)
 
 # Run
-<b>visualisasiolx.html</b> : untuk menampilkan hasil visualisasi
-
-# Catatan
-Jalankan <b>scrapeolx.py</b> hanya jika ingin benar2 mengulang scraping dari awal
-
 Cara menjalankan scraper OLX:
 1. Buka command prompt, arahkan ke direktori scrapertugas
 2. Run "scrapy runspider scrapeolx.py"
 
+# Menampilkan Visualisasi
+<b>visualisasiolx.html</b> : untuk menampilkan hasil visualisasi
+
+# Catatan
+Jalankan <b>scrapeolx.py</b> hanya jika ingin benar2 mengulang scraping dari awal
