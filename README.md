@@ -7,7 +7,8 @@
 
 # Catatan
 Jalankan <b>scrapeolx.py</b> hanya jika ingin benar2 mengulang scraping dari awal
-Cara menjalankan:
+
+Cara menjalankan scraper OLX:
 1. Buka command prompt, arahkan ke direktori scrapertugas
 2. Run "scrapy runspider scrapeolx.py"
 
