@@ -29,7 +29,7 @@ def rupiahToNumber(rupiah):
     return integer
 
 def generate_page_url():
-    numofpage = 500
+    numofpage = 10
     for i in range(1,numofpage):
         if i==1:
             page_url.append('https://www.olx.co.id/motor/bekas/')
