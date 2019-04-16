@@ -15,7 +15,7 @@ def create_table():
     c.execute("CREATE TABLE IF NOT EXISTS motorBekas(img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price TEXT)")
     c.execute("DELETE FROM motorBekas")
 
-#SCRAPY
+#SCRAPY update
 def textBeautify(data):
     return list(map(lambda s: s.strip(), data))
 
