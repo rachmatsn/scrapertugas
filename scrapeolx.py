@@ -71,7 +71,7 @@ class ScrapeolxSpider(scrapy.Spider):
                 'brand': item[2],
                 'city': item[3],
                 'year': item[4],
-                'price': rupiahToNumber(item[5]), 
+                'price': item[5],#rupiahToNumber(item[5]), 
             }
             c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
                       (scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
