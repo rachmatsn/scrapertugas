@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #rachmat_sn
+# scrapy runspider scrapeolx.py
 
 import scrapy
 import sqlite3
@@ -8,11 +9,12 @@ count = 0
 page_url = []
 
 #SQLITE3
-conn = sqlite3.connect('scrapeolx_1.db')
+dbname = 'DBscraper.db'
+conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
 def create_table():
-    c.execute("CREATE TABLE IF NOT EXISTS motorBekas(img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price TEXT)")
+    c.execute("CREATE TABLE IF NOT EXISTS motorBekas(img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price INTEGER)")
     c.execute("DELETE FROM motorBekas")
 
 #SCRAPY
@@ -21,6 +23,15 @@ def textBeautify(data):
 
 def textBeautifyBrand(data):
     return list(map(lambda s: s.strip()[14:], data))
+
+def rupiahToNumber(rupiah):
+    noRp = rupiah[3:]
+    noDot = noRp.replace(".", "")
+    if noDot == '':
+        return ''
+    else:
+        integer = int(noDot)
+        return integer
 
 def generate_page_url():
     numofpage = 500
@@ -39,10 +50,9 @@ class ScrapeolxSpider(scrapy.Spider):
     
     def start_requests(self):
         for url in page_url:
-            #print(url)
             yield scrapy.Request(url=url, callback=self.parse)
     
-    def parse(self, response):
+    def parse(self, response):        
         print('test')
         img = textBeautify(response.css('td.offer>table>tbody>tr>td>span>a>img.fleft::attr(src)').extract())
         txt = textBeautify(response.css('td.offer>table>tbody>tr>td>h2>a::text').extract())
@@ -57,28 +67,23 @@ class ScrapeolxSpider(scrapy.Spider):
         city = textBeautify(response.css('td.offer>table>tbody>tr>td>p>small.breadcrumb>span::text').extract())
         year = textBeautify(response.css('td.offer>table>tbody>tr>td>div>div.year::text').extract())
         price = textBeautify(response.css('td.offer>table>tbody>tr>td>div>p.price>strong::text').extract())
-        print ('img: ', img)
-        print ('txt: ', txt)
-        print ('brand: ', brand)
-        print ('city: ', city)
-        print ('year: ', year)
-        print ('price : ', price)
         
-        for item in zip(img,txt,brand,city,year,price):
+        #cari yg panjangnya paling kecil untuk acuan
+        jum_data_per_iter = min([len(img), len(txt), len(brand), len(city), len(year), len(price)])
+        for it in range(jum_data_per_iter):
             scraped_info = {
-                'img': item[0],
-                'txt': item[1],
-                'brand': item[2],
-                'city': item[3],
-                'year': item[4],
-                'price': item[5], 
+                'img': img[it],
+                'txt': txt[it],
+                'brand': brand[it],
+                'city': city[it],
+                'year': year[it],
+                'price': rupiahToNumber(price[it]), 
             }
             
-            c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
+            #commit jika semua data tidak kosong '' DAN brand bukan 'Lain-lain'
+            if(scraped_info['img']!='' and scraped_info['img']!='' and scraped_info['brand']!='' and scraped_info['city']!='' and scraped_info['year']!='' and scraped_info['price']!='' and scraped_info['brand']!='Lain-lain'):
+                c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
                       (scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
-            conn.commit()
+                conn.commit()
+                
             yield scraped_info
-        
-        c.close()
-        conn.close()
-        
