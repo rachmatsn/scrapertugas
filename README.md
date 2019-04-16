@@ -12,5 +12,3 @@ Cara menjalankan scraper OLX:
 1. Buka command prompt, arahkan ke direktori scrapertugas
 2. Run "scrapy runspider scrapeolx.py"
 
-# Terakhir di-update
-25 Maret 2019
