@@ -22,6 +22,12 @@ def textBeautify(data):
 def textBeautifyBrand(data):
     return list(map(lambda s: s.strip()[14:], data))
 
+def rupiahToNumber(rupiah):
+    noRp = rupiah[3:]
+    noDot = noRp.replace(".", "")
+    integer = int(noDot)
+    return integer
+
 def generate_page_url():
     numofpage = 500
     for i in range(1,numofpage):
@@ -65,7 +71,7 @@ class ScrapeolxSpider(scrapy.Spider):
                 'brand': item[2],
                 'city': item[3],
                 'year': item[4],
-                'price': item[5], 
+                'price': rupiahToNumber(item[5]), 
             }
             c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
                       (scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
