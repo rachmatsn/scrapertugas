@@ -14,7 +14,7 @@ conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
 def create_table():
-    c.execute("CREATE TABLE IF NOT EXISTS motorBekas(img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price INTEGER)")
+    c.execute("CREATE TABLE IF NOT EXISTS motorBekas(ad_id TEXT, img TEXT, txt TEXT, brand TEXT,city TEXT, year TEXT, price INTEGER, UNIQUE(ad_id))")
     c.execute("DELETE FROM motorBekas")
 
 #SCRAPY
@@ -54,6 +54,7 @@ class ScrapeolxSpider(scrapy.Spider):
     
     def parse(self, response):        
         print('test')
+        ad_id = textBeautify(response.css('td.offer>table>tbody>tr::attr(data-ad-id)').extract())
         img = textBeautify(response.css('td.offer>table>tbody>tr>td>span>a>img.fleft::attr(src)').extract())
         txt = textBeautify(response.css('td.offer>table>tbody>tr>td>h2>a::text').extract())
         
@@ -72,6 +73,7 @@ class ScrapeolxSpider(scrapy.Spider):
         jum_data_per_iter = min([len(img), len(txt), len(brand), len(city), len(year), len(price)])
         for it in range(jum_data_per_iter):
             scraped_info = {
+                'ad_id': ad_id[it],
                 'img': img[it],
                 'txt': txt[it],
                 'brand': brand[it],
@@ -81,9 +83,9 @@ class ScrapeolxSpider(scrapy.Spider):
             }
             
             #commit jika semua data tidak kosong '' DAN brand bukan 'Lain-lain'
-            if(scraped_info['img']!='' and scraped_info['img']!='' and scraped_info['brand']!='' and scraped_info['city']!='' and scraped_info['year']!='' and scraped_info['price']!='' and scraped_info['brand']!='Lain-lain'):
-                c.execute("INSERT INTO motorBekas (img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?)",
-                      (scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
+            if(scraped_info['ad_id']!='' and scraped_info['img']!='' and scraped_info['img']!='' and scraped_info['brand']!='' and scraped_info['city']!='' and scraped_info['year']!='' and scraped_info['price']!='' and scraped_info['brand']!='Lain-lain'):
+                c.execute("INSERT OR IGNORE INTO motorBekas (ad_id, img, txt, brand, city, year, price) VALUES(?,?,?,?,?,?,?)",
+                      (scraped_info['ad_id'],scraped_info['img'], scraped_info['txt'], scraped_info['brand'], scraped_info['city'], scraped_info['year'], scraped_info['price']))
                 conn.commit()
                 
             yield scraped_info
